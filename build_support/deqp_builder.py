@@ -574,6 +574,7 @@ class DeqpTester:
                     # avoid a spin loop.
                     time.sleep(1)
                 else:
+                    print("crash fast path")
                     process_concluded = False
             if not procs:
                 break
