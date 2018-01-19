@@ -555,7 +555,7 @@ class DeqpTester:
         completion_fh = {}  # maintained in the results object.
         completion_interval = 0
         completion_percentage = 0
-        max_crash_cnt = 20000
+        max_crash_cnt = 4000
         crash_cnt = 0
         process_concluded = False
 
