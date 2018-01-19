@@ -624,6 +624,8 @@ class DeqpTester:
                     commands += ["-n", test_name]
                 else:
                     crash_cnt += 1
+                    with open(case_fn, "r") as fh:
+                        test_name = fh.readline().strip()
                     if crash_cnt >= max_crash_cnt:
                         raise Exception("FATAL: %i tests have crashed "
                                         "aborting remaining tests"
