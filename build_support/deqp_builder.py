@@ -13,13 +13,14 @@ from . import *
 from .builders import get_libdir, get_libgl_drivers
 
 class DeqpTrie:
-    def __init__(self):
+    def __init__(self, runtime=None):
         self._trie = {}
         self._result = {}
         self._content = {}
         self._duration = {}
         self._stdout = {}
         self._stderr = {}
+        self._runtime = runtime if isinstance(runtime, int) else None
 
     def empty(self):
         return not self._trie
@@ -227,8 +228,9 @@ class DeqpTrie:
             else:
                 self._trie[k] = v
 
-    def add_qpa_blob(self, split_test_name, blob, pid, full_test_name, err=None):
-        if err == None:
+    def add_qpa_blob(self, split_test_name, blob, pid, full_test_name,
+                     err=None):
+        if err is None:
             err = []
         err = [e for e in err if "ATTENTION: default value of option vblank_mode" not in e]
         err = [e for e in err if "Mesa: " not in e]
@@ -267,13 +269,26 @@ class DeqpTrie:
                     elif number.attrib["Unit"] == "ms":
                         duration /= 1000.0
                     self._duration[test] = duration
-                
+                if self._runtime:
+                    # Fail tests that take too long to execute
+                    if (self._result[test] == "Pass"
+                            and duration > self._runtime):
+                        self._result[test] = "Fail"
+                        self._stdout[test] += ("\nFAIL: This test exceeded the "
+                                               "time limit of {} seconds (test "
+                                               "took {} seconds to complete). "
+                                               .format(self._runtime, duration)
+                                               )
+                    # Ignore any tests that may have failed for other reasons
+                    else:
+                        self._result[test] = "Pass"
+
             except:
                 self._result[test] = "crash"
             return
         group = split_test_name[0]
         if not self._trie.has_key(group):
-            self._trie[group] = DeqpTrie()
+            self._trie[group] = DeqpTrie(runtime=self._runtime)
         self._trie[group].add_qpa_blob(split_test_name[1:], blob, pid, full_test_name, err)
 
     def write_junit(self, of, config, missing_commits):
@@ -436,9 +451,10 @@ class ConfigFilter(object):
         of.write("""  </testcase>\n""")
 
 class DeqpTester:
-    def __init__(self):
+    def __init__(self, runtime=None):
         self.o = Options()
         self.pm = ProjectMap()
+        self.runtime = runtime if isinstance(runtime, int) else None
 
     def test(self, binary, list_policy, extra_args=None, env=None):
         if extra_args is None:
@@ -497,6 +513,9 @@ class DeqpTester:
         full_test_count = shard_tests.test_count()
         print "Total test count: " + str(full_test_count) + "\n"
         cpus = multiprocessing.cpu_count()
+        # Disable parallel testing if testing run time of tests
+        if self.runtime:
+            cpus = 1
         base_commands = [binary,
                          "--deqp-log-images=disable",
                          "--deqp-gl-config-name=rgba8888d24s8",
@@ -549,7 +568,7 @@ class DeqpTester:
 
         # free memory associated with the Trie
         shard_tests = None
-        results = DeqpTrie()
+        results = DeqpTrie(runtime=self.runtime)
 
         completed_tests = 0 # for status only.  accurate count is
         completion_fh = {}  # maintained in the results object.
@@ -619,8 +638,8 @@ class DeqpTester:
                         with open(case_fn, "r") as fh:
                             test_name = fh.readline().strip()
                     results.add_qpa_blob(test_name.split("."),
-                                              '<bogus><Result StatusCode="crash"/></bogus>',
-                                              proc.pid, test_name, errors)
+                                         '<bogus><Result StatusCode="crash"/></bogus>',
+                                         proc.pid, test_name, errors)
                 unfinished_tests = tests[cpu]
                 if not single_proc:
                     unfinished_tests.filter(results)
@@ -666,7 +685,8 @@ class DeqpTester:
                     current_test = line[len("#beginTestCaseResult "):]
                     continue
                 if line.startswith("#endTestCaseResult"):
-                    results_trie.add_qpa_blob(current_test.split("."), blob, pid, current_test)
+                    results_trie.add_qpa_blob(current_test.split("."), blob,
+                                              pid, current_test)
                     blob = []
                     current_test = ""
                     continue
