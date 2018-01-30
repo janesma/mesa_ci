@@ -137,16 +137,16 @@ def build(builder, options=None, time_limit=None, import_build=True):
 
     # Walk through the possible actions in order, if those actions are not
     # requested go on. The order does matter.
-    if k == "test" and "CACHE_DISABLE" in options.env:
-        shader_cache_test = True
-    else:
-        shader_cache_test = False
 
     for k, a in action_map:
         if k not in actions:
             continue
         options.action = a
 
+        if k == "test" and "CACHE_DISABLE" in options.env:
+            shader_cache_test = True
+        else:
+            shader_cache_test = False
         try:
             if shader_cache_test:
                 print("Deleting shader cache")
