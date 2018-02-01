@@ -181,6 +181,7 @@ _hardware = [
     "ilk",
     "g33",
     "g45",
+    "cnl",
 ]
 preferred_hardware = {n: i for i, n in enumerate(_hardware)}
 
