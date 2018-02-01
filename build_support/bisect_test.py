@@ -182,7 +182,7 @@ _hardware = [
     "g33",
     "g45",
 ]
-preferred_hardware = {n: i for i, n in enumerate(_hardware, start=1)}
+preferred_hardware = {n: i for i, n in enumerate(_hardware)}
 
 class PiglitTest:
     """Represents a single test.  Has the primary arch that will be
