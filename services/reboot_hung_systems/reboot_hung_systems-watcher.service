@@ -1,0 +1,7 @@
+[Unit]
+Description=Hung System restart watcher
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart reboot_hung_systems
