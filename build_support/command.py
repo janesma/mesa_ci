@@ -186,7 +186,9 @@ def is_exe(cmd):
     """
     if os.path.exists(cmd) and os.access(cmd, os.X_OK):
         return cmd
-    for dirname in os.environ['PATH'].split(':'):
+    # Choose the correct PATH delimiter based on OS
+    sep = ';' if os.name == "nt" else ':'
+    for dirname in os.environ['PATH'].split(sep):
         path = os.path.join(dirname, cmd)
         if os.path.exists(path) and os.access(path, os.X_OK):
             return path
