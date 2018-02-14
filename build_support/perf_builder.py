@@ -95,7 +95,7 @@ class PerfBuilder(object):
             interpreter = sys.executable
             # sixonix requires python3
             if not sys.version.startswith("3"):
-                interpreter = "python3"
+                interpreter = "py -3" if os.name == "nt" else "python3"
             cmd = [interpreter, "sixonix.py", "run"]
             if not self._windowed:
                 cmd += ["--fullscreen"]
