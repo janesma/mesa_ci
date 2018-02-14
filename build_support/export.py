@@ -51,6 +51,7 @@ class Export:
         # todo: provide wildcard mechanism
         self.result_path = Options().result_path
         if not self.result_path:
+            self._dest = None
             return
 
         if not os.path.exists(self.result_path):
