@@ -1,0 +1,5 @@
+[Path]
+PathModified=/var/cache/mesa_jenkins/reboot_hung_systems_config.json
+
+[Install]
+WantedBy=multi-user.target
