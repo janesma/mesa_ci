@@ -131,6 +131,9 @@ class DeqpTrie:
         elif "GTF-GL46" in xml_file:
             current_trie = DeqpTrie()
             self._trie["GTF-GL46"] = current_trie
+        elif "KHR-NoContext" in xml_file:
+            current_trie = DeqpTrie()
+            self._trie["KHR-NoContext"] = current_trie
         else:
             return
         root = et.parse(xml_file).getroot()
