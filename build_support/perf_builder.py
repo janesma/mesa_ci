@@ -120,7 +120,9 @@ class PerfBuilder(object):
                 r = "UFO"
             else:
                 r = str(RevisionSpecification().revision("mesa"))
-            full_bench_name = benchmark
+            # dots are changed to underscores since some downstream components
+            # (e.g. javascript) cannot handle it.
+            full_bench_name = benchmark.replace('.', '_')
             if self._windowed:
                 full_bench_name = benchmark + "_windowed"
             gpu_hw = self._opt.hardware.split("-")[0]
