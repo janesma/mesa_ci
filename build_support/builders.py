@@ -581,6 +581,11 @@ class PiglitTester(object):
                 print "WARNING: glk not supported by stable mesa"
                 return
 
+        if "cnl" in o.hardware:
+            if "17" in mv:
+                print "WARNING: cnl not supported by stable mesa"
+                return
+
         dev_ids = { "byt" : "0x0F32",
                     "g45" : "0x2E22",
                     "g965" : "0x29A2",
