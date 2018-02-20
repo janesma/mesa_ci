@@ -782,6 +782,10 @@ class PiglitTester(object):
         if "byt" in hardware:
             exclude_tests += ["ext_framebuffer_multisample.accuracy"]
 
+        if "g965" in hardware:
+            exclude_tests += ["nv_conditional_render.dlist"]
+
+
         exclude_cmd = []
         for test in exclude_tests:
             fixed_test = test.replace('_', '.')
