@@ -41,7 +41,7 @@ def main():
         sys.exit(0)
 
     # else choose random revision
-    branch_commit = mesa_repo.tags["17.1-branchpoint"].commit.hexsha
+    branch_commit = mesa_repo.tags["17.3-branchpoint"].commit.hexsha
     commits = []
     for commit in mesa_repo.iter_commits('origin/master', max_count=8000):
         if commit.hexsha == branch_commit:
