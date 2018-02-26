@@ -124,7 +124,7 @@ class PerfBuilder(object):
             # (e.g. javascript) cannot handle it.
             full_bench_name = benchmark.replace('.', '_')
             if self._windowed:
-                full_bench_name = benchmark + "_windowed"
+                full_bench_name += "_windowed"
             gpu_hw = self._opt.hardware.split("-")[0]
             result[full_bench_name] = {gpu_hw: {"mesa=" + r: [{"score": scores[benchmark]}]}}
             out_dir = "/tmp/build_root/" + self._opt.arch + "/scores/" + \
