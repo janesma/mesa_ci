@@ -594,7 +594,10 @@ def write_summary(out_dir, completed_builds, ljen, failure=False):
         message = repo_set.repo(project).commit().message.splitlines()[0]
         # allow for special chars in message.
         git_log[project] = xml.sax.saxutils.quoteattr(message) 
-
+    rev_list = []
+    # rev_list is used for creating the retest build url in the summary
+    rev_list = ['{}={}'.format(proj, rev)
+                for (proj, rev) in ljen._revspec._revisions.iteritems()]
     build_status = 'success'
     if failure:
         build_status = 'failure'
@@ -681,8 +684,17 @@ def write_summary(out_dir, completed_builds, ljen, failure=False):
     detailcolor="" 
     href="http://{server}/job/bisect_failures/parambuild/?result_path={result_path}" />
 <br/>
+<br/>
+    <field name="Build link to retest failed components"
+    titlecolor="black" 
+    value="retest" 
+    detailcolor="" 
+    href="http://{server}/job/{job_name}/parambuild/?revision={rev_list}" />
+<br/>
     <field name="Test Results" titlecolor="black" value="" detailcolor="" href="" />
-</section>""".format(result_path=ljen._result_path, server=ljen._server))
+</section>""".format(result_path=ljen._result_path, server=ljen._server,
+                     rev_list='%20'.join(rev_list),
+                     job_name=os.environ.get("JOB_NAME")))
     outf.close()
 
 
