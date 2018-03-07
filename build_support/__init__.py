@@ -52,6 +52,7 @@ from builders import *
 from timer import TimeOut
 from deqp_builder import *
 from perf_builder import *
+from android_builder import *
 
 class DefaultTimeout:
     def __init__(self, options=None):
