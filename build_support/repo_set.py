@@ -322,6 +322,10 @@ class RepoSet:
                                                + '\"', 'fetch',
                                                '+refs/heads/*:refs/'
                                                + remote_name + '/*')
+                # set master to point to origin/master
+                repo.git.config('--local', '--add',
+                                'remote.origin.fetch',
+                                '+refs/heads/master:refs/heads/master')
             else:
                 # For systems that will be fetching from build master's git
                 # cache, add the appropriate fetch refspec so that refs are
