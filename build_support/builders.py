@@ -779,7 +779,8 @@ class PiglitTester(object):
 
         if "g33" in hardware:
             # flaky: piglit.spec.!opengl 1_1.getteximage-formats
-            exclude_tests += ["opengl.1_1.getteximage-formats"]
+            exclude_tests += ["opengl.1_1.getteximage-formats",
+                              "apple_object_purgeable.object_purgeable-api-vbo"]
 
         if "bxt" in hardware:
             exclude_tests += ["arb_compute_shader.execution.simple-barrier-atomics"]
