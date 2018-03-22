@@ -776,6 +776,8 @@ class PiglitTester(object):
         if "ivb" in hardware:
             # flaky
             exclude_tests += ["arb_shader_image_load_store.invalid"]
+            # flaky
+            exclude_tests += ["spec.!opengl 1_3.gl-1_3-texture-env"]
 
         if "g33" in hardware:
             # flaky: piglit.spec.!opengl 1_1.getteximage-formats
