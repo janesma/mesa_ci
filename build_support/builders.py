@@ -391,12 +391,13 @@ class CMakeBuilder(object):
 
 class MesonBuilder(object):
 
-    def __init__(self, extra_definitions=None, compiler="gcc", install=True):
+    def __init__(self, extra_definitions=None, compiler="gcc", install=True, cpp_args=None):
         self._options = Options()
         self._project_map = ProjectMap()
         self._compiler = compiler
         self._install = install
         self._extra_definitions = extra_definitions or []
+        self._cpp_args = cpp_args
         self.tests = [] # List of tests to run
         self.gtests = [] 
 
@@ -421,6 +422,9 @@ class MesonBuilder(object):
             # libEGL trying to open an older system libgm.
            'LD_LIBRARY_PATH': get_libdir(),
         }
+        if self._cpp_args:
+            env["CPPFLAGS"] = self._cpp_args
+
         self._options.update_env(env)
 
         returnto = os.getcwd()
