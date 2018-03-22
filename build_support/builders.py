@@ -692,12 +692,16 @@ class PiglitTester(object):
                           "spec.egl_khr_gl_image.egl_khr_gl_renderbuffer_image-clear-shared-image.gl_depth_component24",
                           "spec.egl_khr_gl_image.egl_khr_gl_renderbuffer_image-clear-shared-image.gl_rgba"]
 
+
         # https://bugs.freedesktop.org/show_bug.cgi?id=97577
         exclude_tests += ["spec.ext_shader_samples_identical.glsl-es-3_10.compiler.all-functions_vert",
                           "spec.oes_shader_io_blocks.compiler.layout-location-aliasing_vert",
                           # flaky:
                           "spec.arb_shader_clock.execution.clock2x32"]
-        
+
+        # https://bugs.freedesktop.org/show_bug.cgi?id=104778
+        exclude_tests += ["spec.!opengl 1_3.gl-1_3-texture-env"]
+
         # bogus test
         exclude_tests += ["arb_shader_image_load_store.execution.coherency-extra"]
 
@@ -780,8 +784,6 @@ class PiglitTester(object):
         if "ivb" in hardware:
             # flaky
             exclude_tests += ["arb_shader_image_load_store.invalid"]
-            # flaky
-            exclude_tests += ["spec.!opengl 1_3.gl-1_3-texture-env"]
 
         if "g33" in hardware:
             # flaky: piglit.spec.!opengl 1_1.getteximage-formats
