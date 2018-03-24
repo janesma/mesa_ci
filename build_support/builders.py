@@ -798,7 +798,8 @@ class PiglitTester(object):
             exclude_tests += ["ext_framebuffer_multisample.accuracy"]
 
         if "g965" in hardware:
-            exclude_tests += ["nv_conditional_render.dlist"]
+            exclude_tests += ["nv_conditional_render.dlist",
+                              "spec.nv_conditional_render.bitmap"]
 
 
         exclude_cmd = []
