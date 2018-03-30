@@ -127,4 +127,4 @@ with open(mesa_dir + "/bin/.cherry-ignore", "a") as ci:
     ci.writelines("{ignore}\n".format(ignore=i) for i in cherry_ignores)
 mesa.index.add(["bin/.cherry-ignore"])
 mesa.index.commit(message = "Automated patching of stable branch")
-sys.exit(-1)
+sys.exit(1)
