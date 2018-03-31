@@ -46,7 +46,6 @@ for commit in mesa.iter_commits(args.target_branch):
                 ignore_commit = aline.split()[1]
                 m = re.match("[0-9a-fA-F]+", ignore_commit)
                 ignore = mesa.commit(m.group(0)).hexsha
-                broken_branch_point = mesa.merge_base(args.target_branch, broken)
                 stable_commits[ignore] = commit.hexsha
             except:
                 # "cherry-" line did not contain a valid sha
@@ -57,6 +56,7 @@ fixes = {}
 for commit in mesa.iter_commits("master"):
     if commit == branch_point:
         break
+    fixes_found = False
     for aline in commit.message.splitlines():
         aline = aline.lower()
         if ("fixes:" in aline):
@@ -64,7 +64,8 @@ for commit in mesa.iter_commits("master"):
                 broken_commit = aline.split()[1]
                 m = re.match("[0-9a-fA-F]+", broken_commit)
                 broken = mesa.commit(m.group(0))
-                broken_branch_point = mesa.merge_base(args.target_branch, broken)
+                fixes_found = True
+                broken_branch_point = mesa.merge_base(args.target_branch, broken)[0]
                 if broken_branch_point == broken:
                     # broken commit is in the stable branch
                     fixes[commit.hexsha] = broken.hexsha
@@ -73,17 +74,32 @@ for commit in mesa.iter_commits("master"):
                     continue
             except:
                 # "fixes:" lined did not contain a valid sha
-                pass
+                continue
             if commit.hexsha not in stable_commits:
                 master_commits.append(commit.hexsha)
             break
+    if fixes_found:
+        #Many patches have both CC and fixes, and you don't
+        # want to select based on the CC.
+        continue
+
+    # else, there may be a CC: that would cause the patch to get
+    # backported.  
+    for aline in commit.message.splitlines():
+        aline = aline.lower()
         if ("cc:" in aline):
-            if ("mesa-stable" in aline) and commit.hexsha not in stable_commits:
+            branches = aline.split()[1:]
+            if ("mesa-stable" in branches[0]) and commit.hexsha not in stable_commits:
+                # commit CC's stable without a specific branch
+                # CC: <mesa-stable@lists.freedesktop.org>
                 master_commits.append(commit.hexsha)
                 break
-            if (args.stable_branch in aline) and commit.hexsha not in stable_commits:
-                master_commits.append(commit.hexsha)
-                break
+            for branch in branches:
+                if (args.stable_branch in branch) and commit.hexsha not in stable_commits:
+                    # commit CC's the specific branch
+                    # CC: "17.3 18.0" <mesa-stable@lists.freedesktop.org>
+                    master_commits.append(commit.hexsha)
+                    break
 
 master_commits.reverse()
 
