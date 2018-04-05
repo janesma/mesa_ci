@@ -311,6 +311,13 @@ class RepoSet:
                     remote = None
                     try:
                         remote = repo.remote(name=remote_name)
+                        # verify that remote url is set to the value in
+                        # build_specification
+                        if remote_repo not in remote.urls:
+                            print("INFO: Updating changed remote url for %s"
+                                  % remote_name)
+                            for url in remote.urls:
+                                remote.set_url(remote_repo, old_url=url)
                         # Remote does not exist, so add it
                         # Note: remotes are added to the repo with the
                         # following fetch refspec:
