@@ -708,10 +708,9 @@ class PiglitTester(object):
         # Bug 95008
         exclude_tests += ["arb_sync.clientwaitsync-timeout"]
 
-        # Bug 95009, 95012
+        # Bug 95009
         if "snb" in hardware:
-            exclude_tests += ["amd_shader_trinary_minmax.execution.built-in-functions.gs-mid3",
-                              "glsl-1_50.execution.built-in-functions.gs-op"]
+            exclude_tests += ["amd_shader_trinary_minmax.execution.built-in-functions.gs-mid3"]
         
         # Bug 94490
         if "ivbgt1" in hardware or "hsw" in hardware:
