@@ -117,7 +117,7 @@ def main():
         try:
             mesa_jenkins_repo.git.pull("origin", BRANCH)
             mesa_jenkins_repo.git.checkout(BRANCH, force=True)
-            mesa_ci_repo.checkout(BRANCH, force=True)
+            mesa_ci_repo.git.checkout(BRANCH, force=True)
         except git.GitCommandError:
             raise Exception("FATAL: Unable to update mesa_jenkins "
                             "work directory: %s" % pm.source_root())
