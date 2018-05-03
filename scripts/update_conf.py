@@ -40,7 +40,7 @@ for a_rev in revs:
     rev = a_rev.split("=")[1]
     rev_hash[proj] = rev
 
-blame = args.blame_revision.split("=")
+blame = args.blame_revision.rstrip().split("=")
 if len(blame) != 2:
     print "ERROR: --blame_revision must be in the format: project=rev"
     sys.exit(-1)
