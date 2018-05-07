@@ -74,7 +74,10 @@ def restart_service(service_name):
                          stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode:
-        raise ServiceRestartFailure(service_name, out, err)
+        # This is not fatal, since this may be running in a CI
+        # without poll_branches
+        print("WARN: Unable to start service: %s. Maybe it doesn't exist? "
+              "Output: %s %s\nContinuing..." % (service_name, out, err))
 
 
 def reload_service_files():
