@@ -794,7 +794,8 @@ class PiglitTester(object):
 
         if "g965" in hardware:
             exclude_tests += ["nv_conditional_render.dlist",
-                              "spec.nv_conditional_render.bitmap"]
+                              "spec.nv_conditional_render.bitmap",
+                              "spec.glsl-1_10.execution.clipping.clip-plane-transformation clipvert_pos"]
 
 
         exclude_cmd = []
